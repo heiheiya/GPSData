@@ -1,0 +1,9 @@
+path='D:\code\matlab\GPSData\10月2号晚上GPS数据\8点36——9点32分';
+hat='\test100';
+[num,txt,raw]=xlsread([path,hat,hat,'.xls']);
+accSpeedx=str2double(txt(:,6));
+accSpeedy=str2double(txt(:,7));
+accSpeedz=str2double(txt(:,8));
+accSpeed=sqrt(accSpeedx.*accSpeedx+accSpeedy.*accSpeedy+accSpeedz.*accSpeedz);
+figure(1);
+plot(accSpeed);
