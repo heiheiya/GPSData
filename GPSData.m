@@ -1,25 +1,34 @@
 path='D:\code\matlab\GPSData\2018-10-10\11点17——11点35分';
 hat='\test100';
 [num,txt,raw]=xlsread([path,hat,hat,'.xls']);
-[num1,txt1,raw1]=xlsread([path,hat,'\result.csv']);
+% [num,txt,raw]=xlsread('D:\code\matlab\GPSData\1023gps数据\1402-1434\test100.xls');
+% [num1,txt1,raw1]=xlsread('Z:\code\GPStest\gps_131\result.csv');
+% [num1,txt1,raw1]=xlsread([path,hat,'\result.csv']);
 x=str2double(txt(:,1));
 y=str2double(txt(:,2));
+accSpeed1x=str2double(txt(:,6));
+accSpeed1y=str2double(txt(:,7));
+accSpeed1z=str2double(txt(:,8));
+% x=num(:,1);
+% y=num(:,2);
 % accSpeed=str2double(txt(:,6));
 % x2=str2double(txt1(:,1));
-% y2=str2double(txt1(:,2));
-x2=num1(:,1);
-y2=num1(:,2);
-x2(x2==0) = [];
-y2(y2==0) = []; 
-time=txt(:,5);
-time(1)=[];
+% % y2=str2double(txt1(:,2));
+% x2=num1(:,1);
+% y2=num1(:,2);
+% x2(x2==0) = [];
+% y2(y2==0) = []; 
+% time=txt(:,5);
+% time(1)=[];
 figure(1)
 plot(x,y,'b-','LineWidth',3);
-hold on
-plot(x2,y2,'r-','LineWidth',3);
+% hold on
+% plot(x2,y2,'r-','LineWidth',3);
 
 
 t=length(x);
+
+probability = staticProbalilityMeasure(accSpeed1x, accSpeed1y, accSpeed1z, t);
 
 kf_params_record = zeros(size(x, 1), 4);
 i = 1;
@@ -43,6 +52,16 @@ while(i <= t)
 %         fprintf('all points are not legal\n');
 %         break;
     else
+        if (probability(i) == 1)
+%             fprintf('i==%d\n',i);
+            x(i) = [];
+            y(i) = [];
+            probability(i) = [];
+            kf_params_record(i, :)=[];
+            t = t -1;
+            count = count + 1;
+            continue
+        end
 %         fprintf('i=%d, time(%d)=%s, time(%d)=%s\n',i, i-1, time{i-1}, i, time{i});
 %         t_diff = time_diff(datenum(time(i-1)),datenum(time(i)));
 %         if is_noisy_point(x(i-1), y(i-1), x(i), y(i), t_diff, accSpeed(i))
